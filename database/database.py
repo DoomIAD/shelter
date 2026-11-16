@@ -125,3 +125,10 @@ def init_db():
                 FOREIGN KEY (reviewed_by) REFERENCES Users(user_id)
             );
         """)
+        conn.executemany(
+            "INSERT OR IGNORE INTO Roles (name) VALUES (?)",
+            [
+                ("admin",),
+                ("user",)
+            ]
+        )

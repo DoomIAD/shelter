@@ -6,10 +6,32 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     </head>
     <body>
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
         <h1>Shelter Website Home</h1>
         <p>Welcome to our shelter website!</p>
-        <button class="primary-btn" onclick="window.location.href='/login'">
-            Login
-        </button>
+        <nav>
+            {% if current_user %}
+                <p>Welcome, {{ current_user["first_name"] }}!</p>
+
+                {% if current_user["role"] == "admin" %}
+                    <p>Administrator Account</p>
+                {% endif %}
+
+                <a href="{{ url_for('auth.logout') }}">Log Out</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Log In</a>
+                <a href="{{ url_for('auth.register') }}">Register</a>
+            {% endif %}
+        </nav>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
     </body>
 </html>

@@ -2,11 +2,33 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Shelter Website</title>
+        <title>Shelter Website - Login</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     </head>
     <body>
         <h1>Shelter Website Login</h1>
-        <p>Please log in to access the shelter website.</p>
+        <p>Please log in to access your account.</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit">Log In</button>
+        </form>
+
+        <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
     </body>
 </html>
