@@ -1,37 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Shelter Website</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    </head>
-    <body>
-        {% with messages = get_flashed_messages() %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endwith %}
-        <h1>Shelter Website Home</h1>
-        <p>Welcome to our shelter website!</p>
-        <nav>
-            {% if current_user %}
-                <p>Welcome, {{ current_user["first_name"] }}!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Shelter Website</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <!-- Template from (https://www.quackit.com/html/html_editors/scratchpad/?example=/html/templates/navbars/split_navbar) -->
+    <header class="navbar">
+      <div class="navbar__container">
+        <h2>Animal Shelter</h2>
 
-                {% if current_user["role"] == "admin" %}
-                    <p>Administrator Account</p>
-                {% endif %}
-
-                <a href="{{ url_for('auth.logout') }}">Log Out</a>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}">Log In</a>
-                <a href="{{ url_for('auth.register') }}">Register</a>
-            {% endif %}
+        <!-- Main Navigation -->
+        <nav class="navbar__main-nav">
+          <ul class="nav-list">
+            <li><a href="#" class="nav-link">Home</a></li>
+            <li><a href="volunteer" class="nav-link">Volunteer</a></li>
+            <li><a href="contact" class="nav-link">Contact Us</a></li>
+          </ul>
         </nav>
 
-        {% with messages = get_flashed_messages() %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endwith %}
-    </body>
+        <!-- User Actions -->
+        <div class="navbar__user-actions">
+          {% if current_user %}
+          <a href="account" class="nav-link nav-link--login"
+            >{{ current_user["first_name"] }}</a
+          >
+
+          {% if current_user["role"] == "admin" %}
+          <p>Administrator Account</p>
+          {% endif %} {% else %}
+          <a href="{{ url_for('auth.login') }}" class="nav-link nav-link--login"
+            >Log In</a
+          >
+          <a
+            href="{{ url_for('auth.register') }}"
+            class="nav-link nav-link--cta"
+            >Sign Up</a
+          >
+          {% endif %}
+        </div>
+      </div>
+    </header>
+    <main class="content">
+      <!-- ================================================================================================================ -->
+      <!-- Search Bar -->
+      <div class="search-container">
+        <form action="/action_page.php">
+          <input type="text" placeholder="Search.." name="search" />
+          <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+      <!-- Filtering - (https://github.com/mmrahmanbappi/100-vanilla-javascript-projects/tree/main/10-ecommerce-business/073-product-filter-sort) -->
+    </main>
+  </body>
 </html>
