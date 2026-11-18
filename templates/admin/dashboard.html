@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Animal Shelter</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+        rel="stylesheet"
+    />
+</head>
+
+<body>
+    <!-- Public Website Navigation -->
+    <header class="navbar">
+        <div class="navbar__container">
+            <h2 class="navbar_brand">Animal Shelter</h2>
+
+            <nav class="navbar__main-nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">Volunteer</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">Contact Us</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="navbar__user-actions">
+                {% if current_user %}
+                    <span class="nav-link">
+                        {{ current_user["first_name"] }}
+                    </span>
+
+                    {% if current_user["role"] == "admin" %}
+                        <span>Administrator</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Dashboard -->
+    <main class="admin-dashboard">
+
+        <section class="admin-dashboard__header">
+            <div>
+                <p class="admin-dashboard__eyebrow">Administration</p>
+                <h1>Admin Dashboard</h1>
+                <p>
+                    Welcome, {{ current_user["first_name"] }}.
+                    Manage the shelter's animals, applications, and users here.
+                </p>
+            </div>
+
+            <a href="{{ url_for('auth.logout') }}"
+               class="admin-dashboard__logout">
+                <i class="fa fa-sign-out"></i> Log Out
+            </a>
+        </section>
+
+        <section class="admin-dashboard__section">
+            <h2>Management</h2>
+            <p>Select an area to manage.</p>
+
+            <div class="admin-dashboard__grid">
+
+                <a href="#" class="admin-card">
+                    <i class="fa fa-paw admin-card__icon"></i>
+                    <h3>Manage Animals</h3>
+                    <p>Add, edit, and remove animal listings.</p>
+                    <span>Manage Animals &rarr;</span>
+                </a>
+
+                <a href="#" class="admin-card">
+                    <i class="fa fa-heart admin-card__icon"></i>
+                    <h3>Adoption Applications</h3>
+                    <p>Review applications and update their status.</p>
+                    <span>View Applications &rarr;</span>
+                </a>
+
+                <a href="#" class="admin-card">
+                    <i class="fa fa-calendar admin-card__icon"></i>
+                    <h3>Volunteer Applications</h3>
+                    <p>Review volunteer applications and schedules.</p>
+                    <span>Manage Volunteers &rarr;</span>
+                </a>
+
+                <a href="#" class="admin-card">
+                    <i class="fa fa-users admin-card__icon"></i>
+                    <h3>Manage Users</h3>
+                    <p>View registered users and manage accounts.</p>
+                    <span>Manage Users &rarr;</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="admin-dashboard__footer">
+            <a href="{{ url_for('home') }}">
+                <i class="fa fa-arrow-left"></i> Return to Website
+            </a>
+        </section>
+
+    </main>
+</body>
+</html>

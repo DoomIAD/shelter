@@ -5,11 +5,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from routes.auth import auth
 from utils.auth_helpers import get_current_user
 from utils.decorators import admin_required
+from routes.admin import admin
 
 # Initialize Flask application
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.register_blueprint(auth)
+app.register_blueprint(admin)
+
 init_db()
 
 @app.context_processor
@@ -20,11 +23,6 @@ def inject_user():
 @app.route("/")
 def home():
     return render_template("home.html")
-
-@app.route("/admin")
-@admin_required
-def admin_dashboard():
-    return "<h1>Admin Dashboard</h1><p>Access granted.</p>"
 
 # Run the Flask app
 if __name__ == "__main__":
