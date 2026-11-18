@@ -56,17 +56,22 @@
         </div>
       </div>
     </header>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <form id="search-form">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search by name, breed, or animal type..."
+          name="search"
+        />
+      </form>
+    </div>
+
     <main class="content">
       <!-- ================================================================================================================ -->
       <!-- Filtering - (https://github.com/mmrahmanbappi/100-vanilla-javascript-projects/tree/main/10-ecommerce-business/073-product-filter-sort) -->
-
-      <!-- Search Bar -->
-      <div class="search-container">
-        <form action="/action_page.php">
-          <input type="text" placeholder="Search.." name="search" />
-          <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-      </div>
 
       <!-- Filters -->
       <div class="fg2">
@@ -74,7 +79,7 @@
           <!-- Animal Type -->
           <fieldset>
             <legend>Type</legend>
-            <div data-facet="animal_type"></div>
+            <div data-facet="type"></div>
           </fieldset>
           <!-- Animal Breed -->
           <fieldset>
@@ -85,7 +90,7 @@
           <fieldset>
             <legend>Age (years)</legend>
             <div class="pr2">
-              <label class="sr-only" for="mn">Minimum age</label>
+              <label class="sr-only" for="mn">Minimum age_months</label>
               <input id="mn" type="number" min="0" step="1" placeholder="Min" />
               <input id="mx" type="number" min="0" step="1" placeholder="Max" />
             </div>
@@ -98,11 +103,11 @@
           <!-- Animal's Gender -->
           <fieldset>
             <legend>Gender</legend>
-            <div data-facet="gender"></div>
+            <div data-facet="sex"></div>
           </fieldset>
         </form>
 
-        <!-- Sorting tool (sort by name, size, or age) -->
+        <!-- Sorting tool (sort by name, size, or age_months) -->
         <div>
           <div class="bar3">
             <span id="cnt" aria-live="polite"></span>
@@ -127,103 +132,48 @@
       const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
       // Fields that get a checkbox group in the sidebar
-      const FACETS = ["animal_type", "breed", "size", "gender"];
+      const FACETS = ["type", "breed", "size", "sex"];
       const SIZE_ORDER = ["Small", "Medium", "Large"];
       const SORTS = {
         name: (a, b) => a.name.localeCompare(b.name),
         name_desc: (a, b) => b.name.localeCompare(a.name),
-        young: (a, b) => a.age - b.age,
-        old: (a, b) => b.age - a.age,
+        young: (a, b) => a.age_months - b.age_months,
+        old: (a, b) => b.age_months - a.age_months,
       };
 
-      // AI generated example data. Will need to be real items from our DB in final version
-      const P = [
-        {
-          animal_id: 1001,
-          name: "Biscuit",
-          animal_type: "Dog",
-          breed: "Labrador Retriever",
-          age: 27,
-          size: "Large",
-          gender: "Male",
-          status: "Available",
-          animal_thumbnail: "/static/images/animals/1001.jpg",
-        },
-        {
-          animal_id: 1002,
-          name: "Luna",
-          animal_type: "Cat",
-          breed: "Domestic Shorthair",
-          age: 7,
-          size: "Small",
-          gender: "Female",
-          status: "Available",
-          animal_thumbnail: "/static/images/animals/1002.jpg",
-        },
-        {
-          animal_id: 1003,
-          name: "Pepper",
-          animal_type: "Dog",
-          breed: "Beagle",
-          age: 80,
-          size: "Medium",
-          gender: "Female",
-          status: "Adopted",
-          animal_thumbnail: "/static/images/animals/1003.jpg",
-        },
-        {
-          animal_id: 1004,
-          name: "Clover",
-          animal_type: "Rabbit",
-          breed: "Holland Lop",
-          age: 24,
-          size: "Small",
-          gender: "Female",
-          status: "Pending",
-          animal_thumbnail: "/static/images/animals/1004.jpg",
-        },
-      ];
+      // REAL data taken from our table
+      const P = {{ animals | tojson }};
 
       let chips = []; // [label, input element] for each active filter
 
+      // Makes a list of only available animals
+      const availableAnimals = P.filter((p) => p.status === "available");
+
       // Build a checkbox group for each facet from the values found in the data
       FACETS.forEach((f) => {
-        const vals = [...new Set(P.map((p) => p[f]))].sort((a, b) =>
-          f === "size"
-            ? SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b)
-            : a.localeCompare(b),
+        const vals = [...new Set(availableAnimals.map((p) => p[f]))].sort(
+          (a, b) =>
+            f === "size"
+              ? SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b)
+              : a.localeCompare(b),
         );
         $(`[data-facet=${f}]`).innerHTML = vals
           .map(
             (v) =>
-              `<label class="c"><input type="checkbox" name="${f}" value="${v}"> ${v}<span class="n">${P.filter((p) => p[f] === v).length}</span></label>`,
+              `<label class="c"><input type="checkbox" name="${f}" value="${v}"> ${v}<span class="n">${availableAnimals.filter((p) => p[f] === v).length}</span></label>`,
           )
           .join("");
       });
 
       //====================================================================================================================================
-      // URL logic for filtered responses. Will probably remove later for simplicity. Just not a priority yet.
-      // Restore filters from the URL
-      function read() {
-        const q = new URLSearchParams(location.search);
-        FACETS.forEach((f) =>
-          $$(`[name=${f}]`).forEach(
-            (i) => (i.checked = q.getAll(f).includes(i.value)),
-          ),
-        );
-        $("#mn").value = q.get("min_age") || "";
-        $("#mx").value = q.get("max_age") || "";
-        $("#sort").value = q.get("sort") || "name";
-      }
 
       // Read the current filters from the form
       function state() {
         const s = {
           min: $("#mn").value !== "" ? Number($("#mn").value) * 12 : 0,
-
           max: $("#mx").value !== "" ? Number($("#mx").value) * 12 : Infinity,
-
           sort: $("#sort").value,
+          search: $("#search").value.trim().toLowerCase(),
         };
 
         FACETS.forEach(
@@ -233,36 +183,30 @@
         return s;
       }
 
-      // Save filters to the URL
-      function write(s) {
-        const q = new URLSearchParams();
-        FACETS.forEach((f) => s[f].forEach((v) => q.append(f, v)));
-        if (s.min) q.set("min_age", s.min);
-        if (s.max !== Infinity) q.set("max_age", s.max);
-        if (s.sort !== "name") q.set("sort", s.sort);
-        history.replaceState(
-          null,
-          "",
-          q.toString() ? "?" + q : location.pathname,
-        );
-      }
-
       // ==========================================================================================
 
       // Filter logic
       function run() {
         const s = state();
-        write(s);
 
+        // Filters out animals not marked as "available"
+        // Filters out items provided by filters FACETS
+        // Filters out things in the search bar (name, breed, type)
         const list = P.filter(
           (p) =>
-            p.status === "Available" &&
+            p.status === "available" &&
             FACETS.every((f) => !s[f].length || s[f].includes(p[f])) &&
-            p.age >= s.min &&
-            p.age <= s.max,
+            p.age_months >= s.min &&
+            p.age_months <= s.max &&
+            (!s.search ||
+              p.name.toLowerCase().includes(s.search) ||
+              p.breed.toLowerCase().includes(s.search) ||
+              p.type.toLowerCase().includes(s.search)),
         ).sort(SORTS[s.sort]);
 
-        $("#cnt").textContent = `${list.length} of ${P.length} animals`;
+        // Shows out of how many available animals you are being shown
+        const availableCount = P.filter((p) => p.status === "available").length;
+        $("#cnt").textContent = `${list.length} of ${availableCount} animals`;
 
         // applied filter chips (the things above the results)
         chips = [
@@ -284,6 +228,7 @@
             ? '<button type="button" data-all>Clear all</button>'
             : "");
 
+        // Display of animals
         $("#grid").innerHTML = list.length
           ? list
               .map(
@@ -292,7 +237,8 @@
                     <article class="pd">
                       <div class="sw3">
                         <img
-                          src="${p.animal_thumbnail || "/static/images/animals/default.jpg"}"
+                          src="/static/images/animals/${p.animal_id}.jpg"
+                          onerror="this.onerror=null; this.src='/static/images/animals/default.jpg';"
                           alt="${p.name}"
                           class="animal-thumbnail"
                         >
@@ -301,10 +247,10 @@
                         <b>${p.name}</b>
                         ${p.breed}<br>
                         Age ${
-                          p.age >= 12
-                            ? `${Math.round(p.age / 12)} ${Math.round(p.age / 12) === 1 ? "year" : "years"}`
-                            : `${p.age} months`
-                        } · ${p.size} · ${p.gender}
+                          p.age_months >= 12
+                            ? `${Math.round(p.age_months / 12)} ${Math.round(p.age_months / 12) === 1 ? "year" : "years"}`
+                            : `${p.age_months} months`
+                        } · ${p.size} · ${p.sex}
                       </div>
                     </article>
                     `,
@@ -313,8 +259,10 @@
           : '<p class="none2">No animals match. Try removing a filter.</p>';
       }
 
+      // Update page after events
       $("#flt").addEventListener("input", run);
       $("#sort").addEventListener("change", run);
+      $("#search").addEventListener("input", run);
       $("#chips").addEventListener("click", (e) => {
         const b = e.target.closest("button");
         if (!b) return;
@@ -328,7 +276,6 @@
         run();
       });
 
-      read();
       run();
     </script>
   </body>

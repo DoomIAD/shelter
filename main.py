@@ -6,11 +6,16 @@ from routes.auth import auth
 from utils.auth_helpers import get_current_user
 from utils.decorators import admin_required
 
+# DB getters/setters
+from database.animals_access import get_animals
+from database.autofill_db import autofill_animals
+
 # Initialize Flask application
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.register_blueprint(auth)
 init_db()
+autofill_animals()
 
 @app.context_processor
 def inject_user():
@@ -19,7 +24,8 @@ def inject_user():
 # Home
 @app.route("/")
 def home():
-    return render_template("home.html")
+    animals = get_animals()
+    return render_template("home.html", animals=animals)
 
 @app.route("/admin")
 @admin_required
