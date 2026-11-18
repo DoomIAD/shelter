@@ -1,4 +1,6 @@
 import sqlite3
+from getpass import getpass
+from werkzeug.security import generate_password_hash
 
 DATABASE = "shelter.db"
 
@@ -9,6 +11,82 @@ def get_db():
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
+def create_default_admin(conn):
+    # Get the admin role ID
+    admin_role = conn.execute(
+        "SELECT role_id FROM Roles WHERE name = ?",
+        ("admin",)
+    ).fetchone()
+
+    if admin_role is None:
+        raise RuntimeError("Admin role does not exist.")
+
+    # Check whether an admin account already exists
+    existing_admin = conn.execute(
+        "SELECT user_id FROM Users WHERE role_id = ? LIMIT 1",
+        (admin_role["role_id"],)
+    ).fetchone()
+
+    if existing_admin:
+        print("Admin account already exists.")
+        return
+
+    print("\nNo admin account found. Create the default administrator.")
+
+    # Collect account information
+    while True:
+        first_name = input("First name: ").strip()
+        last_name = input("Last name: ").strip()
+        email = input("Email: ").strip().lower()
+
+        if not first_name or not last_name or not email:
+            print("First name, last name, and email are required.\n")
+            continue
+
+        # Check whether the email is already registered
+        existing_user = conn.execute(
+            "SELECT user_id FROM Users WHERE email = ?",
+            (email,)
+        ).fetchone()
+
+        if existing_user:
+            print("That email is already registered. Try another email.\n")
+            continue
+
+        password = getpass("Password: ")
+        confirm_password = getpass("Confirm password: ")
+
+        if len(password) < 8:
+            print("Password must be at least 8 characters long.\n")
+            continue
+
+        if password != confirm_password:
+            print("Passwords do not match. Try again.\n")
+            continue
+
+        break
+
+    # Hash the password
+    password_hash = generate_password_hash(password)
+
+    # Insert the administrator account
+    conn.execute(
+        """
+        INSERT INTO Users (
+            role_id, first_name, last_name, email, password_hash
+        )
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (
+            admin_role["role_id"],
+            first_name,
+            last_name,
+            email,
+            password_hash
+        )
+    )
+
+    print(f"\nAdministrator account created for {email}.\n")
 
 def init_db():
     with get_db() as conn:
@@ -132,3 +210,4 @@ def init_db():
                 ("user",)
             ]
         )
+        create_default_admin(conn)
