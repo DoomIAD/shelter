@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Animals | Animal Shelter</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+        rel="stylesheet"
+    />
+</head>
+
+<body>
+    <!-- Public Website Navigation -->
+    <header class="navbar">
+        <div class="navbar__container">
+            <h2 class="navbar__brand">Animal Shelter</h2>
+
+            <nav class="navbar__main-nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">Volunteer</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">Contact Us</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="navbar__user-actions">
+                <span class="nav-link">
+                    {{ current_user["first_name"] }}
+                </span>
+                <span>Administrator</span>
+            </div>
+        </div>
+    </header>
+
+        <main class="animal-management">
+            <div class="animal-management__toolbar">
+                <div>
+                    <h1>Add Animal</h1>
+                    <p>Enter the animal's information below.</p>
+                </div>
+
+                <a href="{{ url_for('admin_animals.index') }}"
+                class="animal-management__add-button">
+                    Back to Animals
+                </a>
+            </div>
+
+            <form method="POST"
+                enctype="multipart/form-data"
+                class="animal-form">
+
+                <div class="animal-form__field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="type">Animal Type</label>
+                    <select id="type" name="type" required>
+                        <option value="">Select a type</option>
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="breed">Breed</label>
+                    <input type="text" id="breed" name="breed" required>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="age_months">Age (months)</label>
+                    <input type="number"
+                        id="age_months"
+                        name="age_months"
+                        min="0"
+                        required>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="size">Size</label>
+                    <select id="size" name="size" required>
+                        <option value="">Select a size</option>
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                    </select>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="sex">Sex</label>
+                    <select id="sex" name="sex" required>
+                        <option value="">Select sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="description">Description</label>
+                    <textarea id="description"
+                            name="description"
+                            rows="5"
+                            required></textarea>
+                </div>
+
+                <div class="animal-form__field">
+                    <label for="image">Animal Image (optional)</label>
+                    <input type="file"
+                        id="image"
+                        name="image"
+                        accept="image/png,image/jpeg,image/gif,image/webp">
+                </div>
+
+                <button type="submit" class="animal-management__add-button">
+                    Add Animal
+                </button>
+            </form>
+        </main>
+</body>
+</html>

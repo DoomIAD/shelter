@@ -587,3 +587,83 @@ select {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Animal Management */
+
+.animal-management__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.animal-management__toolbar h2 {
+    margin: 0;
+}
+
+.animal-management__add-button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    background-color: #8b0000;
+    color: white;
+    font: inherit;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.animal-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.animal-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.animal-table th,
+.animal-table td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+.animal-table th {
+    background-color: #f3f3f3;
+    font-weight: 700;
+}
+
+.animal-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.animal-status {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #eee;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+.animal-management__empty {
+    padding: 30px;
+    text-align: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #666;
+}
+
+@media (max-width: 650px) {
+    .animal-management__toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

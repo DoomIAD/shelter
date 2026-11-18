@@ -126,7 +126,8 @@ def init_db():
                 size TEXT NOT NULL,
                 sex TEXT NOT NULL,
                 description TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'available'
+                status TEXT NOT NULL DEFAULT 'available',
+                image_path TEXT
             );
 
             CREATE TABLE IF NOT EXISTS MedicalRecords (

@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Animals | Animal Shelter</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+        rel="stylesheet"
+    />
+</head>
+
+<body>
+    <!-- Public Website Navigation -->
+    <header class="navbar">
+        <div class="navbar__container">
+            <h2 class="navbar__brand">Animal Shelter</h2>
+
+            <nav class="navbar__main-nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">Volunteer</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">Contact Us</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="navbar__user-actions">
+                <span class="nav-link">
+                    {{ current_user["first_name"] }}
+                </span>
+                <span>Administrator</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-dashboard">
+
+        <section class="admin-dashboard__header">
+            <div>
+                <p class="admin-dashboard__eyebrow">
+                    Administration / Animals
+                </p>
+
+                <h1>Manage Animals</h1>
+
+                <p>
+                    View and manage the animals currently registered
+                    in the shelter database.
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="admin-dashboard__logout">
+                <i class="fa fa-arrow-left"></i> Dashboard
+            </a>
+        </section>
+
+        <section class="admin-dashboard__section">
+
+            <div class="animal-management__toolbar">
+                <h2>Animal Listings</h2>
+
+                <a href="{{ url_for('admin_animals.add') }}"
+                    class="animal-management__add-button">
+                    <i class="fa fa-plus"></i> Add Animal
+                </a>
+            </div>
+
+            {% if animals %}
+                <div class="animal-table-wrapper">
+                    <table class="animal-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Breed</th>
+                                <th>Age</th>
+                                <th>Size</th>
+                                <th>Sex</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for animal in animals %}
+                                <tr>
+                                    <td>{{ animal["animal_id"] }}</td>
+                                    <td>{{ animal["name"] }}</td>
+                                    <td>{{ animal["type"] }}</td>
+                                    <td>{{ animal["breed"] }}</td>
+                                    <td>{{ animal["age_months"] }} months</td>
+                                    <td>{{ animal["size"] }}</td>
+                                    <td>{{ animal["sex"] }}</td>
+                                    <td>
+                                        <span class="animal-status">
+                                            {{ animal["status"]|capitalize }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            {% else %}
+                <p class="animal-management__empty">
+                    No animals have been added to the database yet.
+                </p>
+            {% endif %}
+
+        </section>
+
+    </main>
+</body>
+</html>

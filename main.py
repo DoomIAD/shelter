@@ -6,12 +6,15 @@ from routes.auth import auth
 from utils.auth_helpers import get_current_user
 from utils.decorators import admin_required
 from routes.admin import admin
+from routes.admin_animals import admin_animals
 
 # Initialize Flask application
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 app.secret_key = SECRET_KEY
 app.register_blueprint(auth)
 app.register_blueprint(admin)
+app.register_blueprint(admin_animals)
 
 init_db()
 
