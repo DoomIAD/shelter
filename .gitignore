@@ -18,3 +18,7 @@ venv/
 *.db
 *.sqlite
 *.sqlite3
+
+# Uploaded animal images
+static/uploads/animals/*
+!static/uploads/animals/.gitkeep

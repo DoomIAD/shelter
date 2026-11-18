@@ -14,7 +14,12 @@ def login():
         conn = get_db()
         try:
             user = conn.execute(
-                "SELECT * FROM Users WHERE email = ?",
+                """
+                SELECT Users.*, Roles.name AS role 
+                FROM Users 
+                JOIN Roles ON Users.role_id = Roles.role_id 
+                WHERE email = ?
+                """,
                 (email,)
             ).fetchone()
 
@@ -30,6 +35,10 @@ def login():
             session["user_id"] = user["user_id"]
 
             flash("You have successfully logged in.")
+
+            if user["role"] == "admin":
+                return redirect(url_for("admin.dashboard"))
+
             return redirect(url_for("home"))
 
         finally:
