@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Shelter Website</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <!-- Template from (https://www.quackit.com/html/html_editors/scratchpad/?example=/html/templates/navbars/split_navbar) -->
+    <header class="navbar">
+      <div class="navbar__container">
+        <h2>Animal Shelter</h2>
+
+        <!-- Main Navigation -->
+        <nav class="navbar__main-nav">
+          <ul class="nav-list">
+            <li><a href="#" class="nav-link">Home</a></li>
+            <li><a href="volunteer" class="nav-link">Volunteer</a></li>
+            <li><a href="contact" class="nav-link">Contact Us</a></li>
+          </ul>
+        </nav>
+
+        <!-- User Actions -->
+        <div class="navbar__user-actions">
+          {% if current_user %}
+          <a href="account" class="nav-link nav-link--login"
+            >{{ current_user["first_name"] }}</a
+          >
+
+          {% if current_user["role"] == "admin" %}
+          <p>Administrator Account</p>
+          {% endif %} {% else %}
+          <a href="{{ url_for('auth.login') }}" class="nav-link nav-link--login"
+            >Log In</a
+          >
+          <a
+            href="{{ url_for('auth.register') }}"
+            class="nav-link nav-link--cta"
+            >Sign Up</a
+          >
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <!-- Get passed animal's details -->
+    <!--
+      animal_id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      name TEXT NOT NULL,
+      breed TEXT NOT NULL,
+      age_months INTEGER NOT NULL,
+      size TEXT NOT NULL,
+      sex TEXT NOT NULL,
+      description TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'available',
+      image_path TEXT (the image type .jpeg, .png, etc)
+    -->
+    const P = {{ animal | tojson }};
+
+    <!-- Image of the animal on left side -->
+    <div>
+      <img
+        src="/static/images/animals/${P.animal_id}.${image_path}"
+        onerror="
+          this.onerror = null;
+          this.src = '/static/images/animals/default.jpg';
+        "
+        alt="${p.name}"
+        class="animal-thumbnail"
+      />
+    </div>
+
+    <!-- details of the animal on the right side -->
+    <div>
+      <h1>P.name</h1>
+      <h3>P.breed P.age_months P.sex</h3>
+      <p>P.description</p>
+    </div>
+
+    <!-- Buttons to apply for adoption or favorite the animal on the bottom right-->
+    <div>
+      <button>Apply for Adoption</button>
+      <button>HEART_EMOJI</button>
+    </div>
+  </body>
+</html>

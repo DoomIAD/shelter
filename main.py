@@ -9,7 +9,7 @@ from routes.admin import admin
 from routes.admin_animals import admin_animals
 
 # DB getters/setters
-from database.animals_access import get_animals
+from database.animals_access import get_all_animals, get_single_animal
 from database.autofill_db import autofill_animals
 
 # Initialize Flask application
@@ -30,8 +30,14 @@ def inject_user():
 # Home
 @app.route("/")
 def home():
-    animals = get_animals()
+    animals = get_all_animals()
     return render_template("home.html", animals=animals)
+
+# Animal Listing
+@app.get('/animal_listing/<animal_id>')
+def animal_listing(animal_id):
+    animal=get_single_animal(animal_id)
+    return render_template("animal_listing.html", animal=animal)
 
 # Run the Flask app
 if __name__ == "__main__":
