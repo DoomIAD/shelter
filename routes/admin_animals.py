@@ -80,40 +80,20 @@ def add():
             flash("Age must be a valid number of months.")
             return render_template("admin/add_animal.html")
 
-        # Handle optional image
         image = request.files.get("image")
-        image_path = None
-        saved_image_path = None
 
+        # Validate image before inserting the animal
         if image and image.filename:
             if not allowed_file(image.filename):
                 flash("Please upload a PNG, JPG, JPEG, GIF, or WEBP image.")
                 return render_template("admin/add_animal.html")
 
-            # Sanitize the original filename, then generate a unique name
-            safe_filename = secure_filename(image.filename)
-            extension = safe_filename.rsplit(".", 1)[1].lower()
-
-            filename = f"{uuid.uuid4().hex}.{extension}"
-
-            upload_folder = os.path.join(
-                current_app.static_folder,
-                "uploads",
-                "animals"
-            )
-
-            os.makedirs(upload_folder, exist_ok=True)
-
-            saved_image_path = os.path.join(upload_folder, filename)
-            image.save(saved_image_path)
-
-            # Store a relative path in the database
-            image_path = f"uploads/animals/{filename}"
-
         conn = get_db()
+        saved_image_path = None
 
         try:
-            conn.execute(
+            # Insert animal first so SQLite generates its ID
+            cursor = conn.execute(
                 """
                 INSERT INTO Animals (
                     type,
@@ -122,10 +102,9 @@ def add():
                     age_months,
                     size,
                     sex,
-                    description,
-                    image_path
+                    description
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     animal_type,
@@ -134,15 +113,47 @@ def add():
                     age_months,
                     size,
                     sex,
-                    description,
-                    image_path
+                    description
                 )
             )
+
+            animal_id = cursor.lastrowid
+
+            # Save image using the animal ID as its filename
+            if image and image.filename:
+                safe_filename = secure_filename(image.filename)
+                extension = safe_filename.rsplit(".", 1)[1].lower()
+
+                filename = f"{animal_id}.{extension}"
+
+                upload_folder = os.path.join(
+                    current_app.static_folder,
+                    "uploads",
+                    "animals"
+                )
+
+                os.makedirs(upload_folder, exist_ok=True)
+
+                saved_image_path = os.path.join(upload_folder, filename)
+                image.save(saved_image_path)
+
+                image_path = f"uploads/animals/{filename}"
+
+                # Update the animal with its image path
+                conn.execute(
+                    """
+                    UPDATE Animals
+                    SET image_path = ?
+                    WHERE animal_id = ?
+                    """,
+                    (extension, animal_id)
+                )
 
             conn.commit()
 
         except Exception:
-            # Remove the uploaded image if the database insert fails
+            conn.rollback()
+
             if saved_image_path and os.path.exists(saved_image_path):
                 os.remove(saved_image_path)
 
