@@ -128,7 +128,7 @@ def add():
 
                 upload_folder = os.path.join(
                     current_app.static_folder,
-                    "uploads",
+                    "images",
                     "animals"
                 )
 
@@ -137,7 +137,7 @@ def add():
                 saved_image_path = os.path.join(upload_folder, filename)
                 image.save(saved_image_path)
 
-                image_path = f"uploads/animals/{filename}"
+                image_path = f"images/animals/{filename}"
 
                 # Update the animal with its image path
                 conn.execute(

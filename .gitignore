@@ -22,3 +22,5 @@ venv/
 # Uploaded animal images
 static/uploads/animals/*
 !static/uploads/animals/.gitkeep
+static/images/animals/*
+!static/images/animals/.gitkeep
