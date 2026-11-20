@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<main class="animal-management">
+    <div class="animal-management__toolbar">
+        <div>
+            <h1>Manage Users</h1>
+            <p>View and manage registered website accounts.</p>
+        </div>
+
+        <a href="{{ url_for('admin.dashboard') }}"
+           class="animal-management__add-button">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="animal-table-wrapper">
+        <table class="animal-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Registered</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user['user_id'] }}</td>
+
+                    <td>
+                        {{ user['first_name'] }}
+                        {{ user['last_name'] }}
+                    </td>
+
+                    <td>{{ user['email'] }}</td>
+
+                    <td>
+                        {{ user['phone'] or 'Not provided' }}
+                    </td>
+
+                    <td>
+                        <span class="animal-status">
+                            {{ user['role']|capitalize }}
+                        </span>
+                    </td>
+
+                    <td>{{ user['created_at'] }}</td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="6" class="animal-management__empty">
+                        No registered users found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>

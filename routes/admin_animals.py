@@ -166,3 +166,106 @@ def add():
         return redirect(url_for("admin_animals.index"))
 
     return render_template("admin/add_animal.html")
+
+
+@admin_animals.route("/<int:animal_id>/edit", methods=["GET", "POST"])
+@admin_required
+def edit(animal_id):
+    conn = get_db()
+
+    try:
+        animal = conn.execute(
+            """
+            SELECT *
+            FROM Animals
+            WHERE animal_id = ?
+            """,
+            (animal_id,)
+        ).fetchone()
+
+        if animal is None:
+            flash("Animal not found.")
+            return redirect(url_for("admin_animals.index"))
+
+        if request.method == "POST":
+            animal_type = request.form.get("type", "").strip()
+            name = request.form.get("name", "").strip()
+            breed = request.form.get("breed", "").strip()
+            age_months = request.form.get("age_months", "").strip()
+            size = request.form.get("size", "").strip()
+            sex = request.form.get("sex", "").strip()
+            description = request.form.get("description", "").strip()
+            status = request.form.get("status", "").strip()
+
+            # Validate required fields
+            if not all([
+                animal_type, name, breed, age_months,
+                size, sex, description, status
+            ]):
+                flash("Please fill out all required fields.")
+
+            else:
+                # Validate age
+                try:
+                    age_months = int(age_months)
+
+                    if age_months < 0:
+                        raise ValueError
+
+                except ValueError:
+                    flash("Age must be a valid number of months.")
+
+                else:
+                    if status not in ["available", "pending", "adopted"]:
+                        flash("Invalid animal status.")
+
+                    else:
+                        conn.execute(
+                            """
+                            UPDATE Animals
+                            SET
+                                type = ?,
+                                name = ?,
+                                breed = ?,
+                                age_months = ?,
+                                size = ?,
+                                sex = ?,
+                                description = ?,
+                                status = ?
+                            WHERE animal_id = ?
+                            """,
+                            (
+                                animal_type,
+                                name,
+                                breed,
+                                age_months,
+                                size,
+                                sex,
+                                description,
+                                status,
+                                animal_id
+                            )
+                        )
+
+                        conn.commit()
+
+                        flash(f"{name} was successfully updated.")
+                        return redirect(url_for("admin_animals.index"))
+
+        # Retrieve the animal again in case the form had validation errors
+        animal = conn.execute(
+            """
+            SELECT *
+            FROM Animals
+            WHERE animal_id = ?
+            """,
+            (animal_id,)
+        ).fetchone()
+
+    finally:
+        conn.close()
+
+    return render_template(
+        "admin/edit_animal.html",
+        animal=animal
+    )

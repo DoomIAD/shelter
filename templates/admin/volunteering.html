@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Applications</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Copy the navigation bar from animals.html here -->
+
+    <main class="animal-management">
+        <div class="animal-management__toolbar">
+            <div>
+                <h1>Volunteer Applications</h1>
+                <p>Review and manage volunteer shift applications.</p>
+            </div>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="animal-management__add-button">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="animal-table-wrapper">
+            <table class="animal-table">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Email</th>
+                        <th>Opportunity</th>
+                        <th>Shift Date</th>
+                        <th>Shift Time</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td>
+                            {{ application['first_name'] }}
+                            {{ application['last_name'] }}
+                        </td>
+
+                        <td>{{ application['email'] }}</td>
+
+                        <td>{{ application['opportunity_title'] }}</td>
+
+                        <td>{{ application['shift_date'] }}</td>
+
+                        <td>
+                            {{ application['time_start'] }}
+                            - 
+                            {{ application['time_end'] }}
+                        </td>
+
+                        <td>{{ application['submitted_at'] }}</td>
+
+                        <td>
+                            <span class="animal-status">
+                                {{ application['status']|capitalize }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="animal-management__empty">
+                            No volunteer applications have been submitted yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>

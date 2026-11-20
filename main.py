@@ -5,8 +5,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from routes.auth import auth
 from utils.auth_helpers import get_current_user
 from utils.decorators import admin_required
+
+# Routes for blueprints
 from routes.admin import admin
 from routes.admin_animals import admin_animals
+from routes.admin_applications import admin_applications
+from routes.admin_users import admin_users
 
 # DB getters/setters
 from database.animals_access import get_all_animals, get_single_animal
@@ -19,6 +23,8 @@ app.secret_key = SECRET_KEY
 app.register_blueprint(auth)
 app.register_blueprint(admin)
 app.register_blueprint(admin_animals)
+app.register_blueprint(admin_applications)
+app.register_blueprint(admin_users)
 
 init_db()
 autofill_animals()

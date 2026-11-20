@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adoption Applications</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Copy the navigation bar from animals.html here -->
+
+    <main class="animal-management">
+        <div class="animal-management__toolbar">
+            <div>
+                <h1>Adoption Applications</h1>
+                <p>Review and manage submitted adoption applications.</p>
+            </div>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="animal-management__add-button">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="animal-table-wrapper">
+            <table class="animal-table">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Email</th>
+                        <th>Animal</th>
+                        <th>Phone</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td>
+                            {{ application['first_name'] }}
+                            {{ application['last_name'] }}
+                        </td>
+
+                        <td>{{ application['email'] }}</td>
+
+                        <td>{{ application['animal_name'] }}</td>
+
+                        <td>{{ application['phone'] }}</td>
+
+                        <td>{{ application['submitted_at'] }}</td>
+
+                        <td>
+                            <span class="animal-status">
+                                {{ application['status']|capitalize }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="animal-management__empty">
+                            No adoption applications have been submitted yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>

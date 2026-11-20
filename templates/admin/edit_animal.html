@@ -1,0 +1,93 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<main class="animal-management">
+    <div class="animal-management__toolbar">
+        <div>
+            <h1>Edit Animal</h1>
+            <p>Update information for {{ animal['name'] }}.</p>
+        </div>
+
+        <a href="{{ url_for('admin_animals.index') }}"
+           class="animal-management__add-button">
+            Back to Animals
+        </a>
+    </div>
+
+    <form method="POST" class="animal-form">
+
+        <div class="animal-form__field">
+            <label for="name">Name</label>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   value="{{ animal['name'] }}"
+                   required>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="type">Animal Type</label>
+            <input type="text"
+                id="type"
+                name="type"
+                value="{{ animal['type'] }}"
+                required>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="breed">Breed</label>
+            <input type="text"
+                   id="breed"
+                   name="breed"
+                   value="{{ animal['breed'] }}"
+                   required>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="age_months">Age (months)</label>
+            <input type="number"
+                   id="age_months"
+                   name="age_months"
+                   value="{{ animal['age_months'] }}"
+                   min="0"
+                   required>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="size">Size</label>
+            <select id="size" name="size" required>
+                <option value="Small" {% if animal['size'] == 'Small' %}selected{% endif %}>Small</option>
+                <option value="Medium" {% if animal['size'] == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="Large" {% if animal['size'] == 'Large' %}selected{% endif %}>Large</option>
+            </select>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="sex">Sex</label>
+            <select id="sex" name="sex" required>
+                <option value="Male" {% if animal['sex'] == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if animal['sex'] == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="description">Description</label>
+            <textarea id="description"
+                      name="description"
+                      rows="5"
+                      required>{{ animal['description'] }}</textarea>
+        </div>
+
+        <div class="animal-form__field">
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="available" {% if animal['status'] == 'available' %}selected{% endif %}>Available</option>
+                <option value="pending" {% if animal['status'] == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="adopted" {% if animal['status'] == 'adopted' %}selected{% endif %}>Adopted</option>
+            </select>
+        </div>
+
+        <button type="submit" class="animal-management__add-button">
+            Save Changes
+        </button>
+
+    </form>
+</main>

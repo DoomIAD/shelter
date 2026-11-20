@@ -97,6 +97,7 @@
                                 <th>Size</th>
                                 <th>Sex</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -114,6 +115,11 @@
                                         <span class="animal-status">
                                             {{ animal["status"]|capitalize }}
                                         </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('admin_animals.edit', animal_id=animal['animal_id']) }}">
+                                            Edit
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
