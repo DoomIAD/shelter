@@ -30,14 +30,31 @@ def inject_user():
 # Home
 @app.route("/")
 def home():
+    # Passes all of the animals saved to the DB
     animals = get_all_animals()
     return render_template("home.html", animals=animals)
 
 # Animal Listing
 @app.get('/animal_listing/<animal_id>')
 def animal_listing(animal_id):
+    # Passes the given animal's information based on their ID via URL
     animal=get_single_animal(animal_id)
     return render_template("animal_listing.html", animal=animal)
+
+#===============================================================================
+# Website Functions
+@app.template_filter("age")
+def age(months):
+    if months >= 12:
+        years = months // 12
+        new_months = months % 12
+
+        if years == 1:
+            return f"{years} year"
+        else:
+            return f"{years} years"
+
+    return f"{months} months"
 
 # Run the Flask app
 if __name__ == "__main__":

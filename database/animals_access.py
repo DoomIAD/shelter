@@ -1,7 +1,7 @@
 from database.database import get_db
 
 # Returns all of the animals' info
-def get_animals():
+def get_all_animals():
     db = get_db()
 
     animals = db.execute("""
@@ -16,10 +16,10 @@ def get_animals():
 def get_single_animal(animal_id):
     db = get_db()
 
-    animals = db.execute("""
+    animal = db.execute("""
         SELECT *
         FROM Animals
-        WHERE animal_id
-    """).fetchall()
+        WHERE animal_id = ?
+    """, (animal_id,)).fetchone()
 
-    return [dict(animal) for animal in animals]
+    return dict(animal) if animal else None

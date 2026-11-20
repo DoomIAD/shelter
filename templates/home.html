@@ -234,6 +234,7 @@
               .map(
                 (p) =>
                   `
+                  <a href="animal_listing/${p.animal_id}" class="animal-card-link">
                     <article class="pd" href="animal_listing/${p.animal_id}">
                       <div class="sw3">
                         <img
@@ -253,6 +254,7 @@
                         } · ${p.size} · ${p.sex}
                       </div>
                     </article>
+                    </a>
                     `,
               )
               .join("")

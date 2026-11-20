@@ -28,7 +28,7 @@
         <!-- Main Navigation -->
         <nav class="navbar__main-nav">
           <ul class="nav-list">
-            <li><a href="#" class="nav-link">Home</a></li>
+            <li><a href="/" class="nav-link">Home</a></li>
             <li><a href="volunteer" class="nav-link">Volunteer</a></li>
             <li><a href="contact" class="nav-link">Contact Us</a></li>
           </ul>
@@ -70,32 +70,71 @@
       status TEXT NOT NULL DEFAULT 'available',
       image_path TEXT (the image type .jpeg, .png, etc)
     -->
-    const P = {{ animal | tojson }};
+    <main class="wrap">
+      <section class="animal-listing">
+        <!-- Image of the animal on left side -->
+        <div class="animal-listing__image">
+          <img
+            src="{{ url_for('static', filename='images/animals/' ~ animal.animal_id ~ '.' ~ (animal.image_path or 'jpg').lstrip('.')) }}"
+            onerror="this.onerror = null; 
+            this.src = '{{ url_for('static', filename='images/animals/default.jpg') }}';"
+            alt="{{ animal.name }}"
+            class="animal-thumbnail"
+          />
+        </div>
 
-    <!-- Image of the animal on left side -->
-    <div>
-      <img
-        src="/static/images/animals/${P.animal_id}.${image_path}"
-        onerror="
-          this.onerror = null;
-          this.src = '/static/images/animals/default.jpg';
-        "
-        alt="${p.name}"
-        class="animal-thumbnail"
-      />
-    </div>
+        <!-- Animal details on the right -->
+        <div class="animal-listing__details">
+          <h1>{{ animal.name }}</h1>
 
-    <!-- details of the animal on the right side -->
-    <div>
-      <h1>P.name</h1>
-      <h3>P.breed P.age_months P.sex</h3>
-      <p>P.description</p>
-    </div>
+          <h3>
+            {{ animal.breed }} · {{ animal.age_months | age }} · {{ animal.size
+            }} · {{ animal.sex }}
+          </h3>
 
-    <!-- Buttons to apply for adoption or favorite the animal on the bottom right-->
-    <div>
-      <button>Apply for Adoption</button>
-      <button>HEART_EMOJI</button>
-    </div>
+          <p>{{ animal.description }}</p>
+
+          <!-- Buttons -->
+          <div class="animal-listing__actions">
+            <!-- Checks the availability of the animal. If unavailable, don't let them adopt! -->
+            {% if animal.status == "available" %}
+            <a
+              href="/adoption_application/{{ animal.animal_id }}"
+              class="animal-listing__apply"
+            >
+              Apply for Adoption
+            </a>
+            {% else %}
+            <button type="button" class="animal-listing__apply" disabled>
+              Currently Unavailable
+            </button>
+            {% endif %}
+
+            <button
+              type="button"
+              class="animal-listing__favorite"
+              aria-label="Add to favorites"
+              aria-pressed="false"
+              onclick="toggleFavorite(this)"
+            >
+              <i class="fa fa-heart-o" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Changes the style of the favorite icon when pressed
+      function toggleFavorite(btn) {
+        const on = btn.classList.toggle("active");
+        btn.querySelector("i").className = on ? "fa fa-heart" : "fa fa-heart-o";
+        btn.setAttribute("aria-pressed", on);
+        btn.setAttribute(
+          "aria-label",
+          on ? "Remove from favorites" : "Add to favorites",
+        );
+      }
+    </script>
   </body>
 </html>
